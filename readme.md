@@ -18,3 +18,14 @@ GET localhost:3000/logs?timestamp=2020-01-01T05:45:31.296Z
 - I will first search in my window if timestamp is there or not.
 - If not i will change the window position via binary search and perform same steps again
 - Have found out all edge cases and solved them.
+
+## Steps to setup the project
+- Fork the repository
+- Run following command to start the server
+```
+npm start
+```
+- Now the server is up and running and in postman or browser you can try following endpoint and change timezone according to your need
+```
+localhost:3000/logs?timestamp=2020-01-01T05:45:31.296Z
+```
