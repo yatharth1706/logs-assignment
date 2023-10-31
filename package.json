@@ -1,8 +1,8 @@
 {
   "name": "nektar-ai-assignment",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Http Server handling log requests",
+  "main": "src/index.js",
   "scripts": {
     "start": "nodemon src/index.ts"
   },

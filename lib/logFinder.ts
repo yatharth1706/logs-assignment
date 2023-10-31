@@ -39,6 +39,14 @@ function binarySearchLogFile(targetTimestamp: string) {
 
       if (timestamp === targetTimestamp) {
         result = logLine;
+
+        // Here's an edge case this final resulted log line can be partial so we can do one more search in
+        // this window by maximizing it a little by maybe 256. That will ensure
+        // we get always correct full log line
+        let tempBuffer = Buffer.alloc(512 + 256);
+        fs.readSync(fd, tempBuffer, 0, tempBuffer.length, startPointer);
+
+        result = searchTheLogInBuffer(tempBuffer, targetTimestamp);
         found = true;
         break;
       }
@@ -74,5 +82,27 @@ function binarySearchLogFile(targetTimestamp: string) {
 
   return result;
 }
+
+const searchTheLogInBuffer = (buffer: Buffer, targetTimeStamp: string) => {
+  const logs = buffer.toString();
+
+  let finalLogs = logs.split("\n");
+
+  for (let i = 0; i <= finalLogs.length - 1; i++) {
+    const logLine = finalLogs[i].trim();
+    if (logLine.trim() === "" || /^\x00*$/.test(logLine)) continue; // Skip empty lines
+
+    const timeValue = logLine.split(" ")[0];
+    if (timeValue.length < 24) continue; // Skip lines with no timestamp
+
+    const timestamp = new Date(logLine.split(" ")[0]).toISOString();
+
+    if (timestamp === targetTimeStamp) {
+      return logLine;
+    }
+  }
+
+  return "";
+};
 
 export default binarySearchLogFile;
